@@ -125,6 +125,8 @@
 
 -compile([{parse_transform, lager_transform}]).
 
+-ifndef(S2_LAGER_USE_UNSAFE).
+
 -define(debug(Format),           lager:debug(Format, [])).
 -define(debug(Format, Args),     lager:debug(Format, Args)).
 -define(info(Format),            lager:info(Format, [])).
@@ -141,6 +143,27 @@
 -define(alert(Format, Args),     lager:alert(Format, Args)).
 -define(emergency(Format),       lager:emergency(Format, [])).
 -define(emergency(Format, Args), lager:emergency(Format, Args)).
+
+-else.
+
+-define(debug(Format),           lager:debug_unsafe(Format, [])).
+-define(debug(Format, Args),     lager:debug_unsafe(Format, Args)).
+-define(info(Format),            lager:info_unsafe(Format, [])).
+-define(info(Format, Args),      lager:info_unsafe(Format, Args)).
+-define(notice(Format),          lager:notice_unsafe(Format, [])).
+-define(notice(Format, Args),    lager:notice_unsafe(Format, Args)).
+-define(warning(Format),         lager:warning_unsafe(Format, [])).
+-define(warning(Format, Args),   lager:warning_unsafe(Format, Args)).
+-define(error(Format),           lager:error_unsafe(Format, [])).
+-define(error(Format, Args),     lager:error_unsafe(Format, Args)).
+-define(critical(Format),        lager:critical_unsafe(Format, [])).
+-define(critical(Format, Args),  lager:critical_unsafe(Format, Args)).
+-define(alert(Format),           lager:alert_unsafe(Format, [])).
+-define(alert(Format, Args),     lager:alert_unsafe(Format, Args)).
+-define(emergency(Format),       lager:emergency_unsafe(Format, [])).
+-define(emergency(Format, Args), lager:emergency_unsafe(Format, Args)).
+
+-endif. %S2_LAGER_USE_UNSAFE
 
 -else.
 
