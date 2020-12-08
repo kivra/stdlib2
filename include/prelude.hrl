@@ -233,6 +233,23 @@
                                          ]}])).
 -define(failed(Rsn),         ?failed(Rsn, [])).
 
+%% Structured warning
+%%
+%% * Good to have when sending warnings to Sentry
+%% * In Sentry, logs will be grouped on Format and Args. Log data that differs
+%%   but would still belong to the same Sentry issue should be in Extras.
+%% * The other part of this hack is in raven_error_logger.erl
+-define( warn(Format, Args, Extras)
+       , error_logger:warning_msg( "[warning] Extras: ~p " ++ Format
+                                 , [[ {function, ?FUNCTION_BIN}
+                                    , {line,     ?LINE}
+                                    | Extras
+                                    ] | Args]
+                                 )
+       ).
+-define(warn(Format, Extras), ?warn(Format, [], Extras)).
+-define(warn(Format), ?warn(Format, [], [])).
+
 -define( exception(Class, Reason, Stacktrace, Extras)
        , ?error( "Exception: ~p\n"
                  "Extras: ~p"
