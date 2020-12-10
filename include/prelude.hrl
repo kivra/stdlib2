@@ -240,12 +240,13 @@
 %%   but would still belong to the same Sentry issue should be in Extras.
 %% * The other part of this hack is in raven_error_logger.erl
 -define( warn(Format, Args, Extras)
-       , error_logger:warning_msg( "[warning] Extras: ~p " ++ Format
-                                 , [[ {function, ?FUNCTION_BIN}
-                                    , {line,     ?LINE}
-                                    | Extras
-                                    ] | Args]
-                                 )
+       , ?warning( "Warning: ~p~n" ++ Format
+                 , [ {extras, [ {function, ?FUNCTION_BIN}
+                              , {line,     ?LINE}
+                              | Extras
+                              ]}
+                   | Args]
+                 )
        ).
 -define(warn(Format, Extras), ?warn(Format, [], Extras)).
 -define(warn(Format), ?warn(Format, [], [])).
