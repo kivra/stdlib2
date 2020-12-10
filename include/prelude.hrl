@@ -250,7 +250,7 @@
                    | Args]
                  )
        ).
--define(warn(Format, Extras), ?warn(Format, [], Extras)).
+-define(warn(Format, Args), ?warn(Format, Args, [])).
 -define(warn(Format), ?warn(Format, [], [])).
 
 -define( exception(Class, Reason, Stacktrace, Extras)
