@@ -10,6 +10,7 @@
 -export([ fix/2
         , fix/3
         , flip/1
+        , id/1
         , o/1
         , o/2
         , o/3
@@ -54,6 +55,7 @@ flip_test() ->
   [1|0] = (flip(fun s2_lists:cons/2))(0, 1).
 -endif.
 
+id(Arg) -> Arg.
 
 -spec o([fun()]) -> fun().
 %% @doc (o([F, G]))(X) is F(G(X)).

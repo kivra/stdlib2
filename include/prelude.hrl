@@ -57,6 +57,9 @@
 -define(do(F0, F1, F2, F3, F4, F5, F6, F7, F8, F9),
         s2_maybe:do([F0, F1, F2, F3, F4, F5, F6, F7, F8, F9])).
 
+-define(fmap(F, Functor),
+        s2_functors:fmap(F, Functor)).
+
 -define(ido(F0, F1),
         ?ido([F0, F1])).
 -define(ido(F0, F1, F2),

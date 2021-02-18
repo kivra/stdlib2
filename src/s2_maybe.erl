@@ -8,6 +8,7 @@
 
 %%%_* Exports ==========================================================
 -export([ do/1
+        , fmap/2
         , lift/1
         , lift/2
         , map/2
@@ -49,6 +50,19 @@ do_test() ->
        , fun(X) -> {error, X} end
        , Exn
        ]).
+-endif.
+
+-spec fmap(fun((A) -> B), maybe(A, _)) -> maybe(B, _).
+%%@doc fmap(F, Maybe) is the result of mapping F over Maybe.
+fmap(F, {ok, Value})     when is_function(F, 1) -> {ok, F(Value)};
+fmap(F, {error, Reason}) when is_function(F, 1) -> {error, Reason}.
+
+-ifdef(TEST).
+fmap_test() ->
+  {ok, 2}               = fmap(fun(X)  -> X + 1            end, {ok, 1}),
+  {ok, {ok, 2}}         = fmap(fun(X)  -> {ok, X + 1}      end, {ok, 1}),
+  {ok, {error, reason}} = fmap(fun(_X) -> {error, reason}  end, {ok, 1}),
+  {error, reason}       = fmap(fun(_X) -> {error, reason2} end, {error, reason}).
 -endif.
 
 -spec lift(fun()) -> maybe(_, _).
