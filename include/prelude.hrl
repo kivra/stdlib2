@@ -455,6 +455,7 @@
 -type alist(A, B) :: [{A, B}].
 -type fd()        :: file:io_device().
 -type file()      :: string().
+-type functor(A)  :: s2_functors:functor(A).
 -type thunk(A)    :: fun(() -> A).
 
 -type ok(A)       :: {ok, A}.

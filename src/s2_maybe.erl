@@ -52,7 +52,7 @@ do_test() ->
        ]).
 -endif.
 
--spec fmap(fun((A) -> B), maybe(A, _)) -> maybe(B, _).
+-spec fmap(fun((A) -> B), maybe(A, C)) -> maybe(B, C).
 %%@doc fmap(F, Maybe) is the result of mapping F over Maybe.
 fmap(F, {ok, Value})     when is_function(F, 1) -> {ok, F(Value)};
 fmap(F, {error, Reason}) when is_function(F, 1) -> {error, Reason}.
@@ -61,6 +61,7 @@ fmap(F, {error, Reason}) when is_function(F, 1) -> {error, Reason}.
 fmap_test() ->
   {ok, 2}               = fmap(fun(X)  -> X + 1            end, {ok, 1}),
   {ok, {ok, 2}}         = fmap(fun(X)  -> {ok, X + 1}      end, {ok, 1}),
+  {error, reason}       = fmap(fun(X)  -> X + 1            end, {error, reason}),
   {ok, {error, reason}} = fmap(fun(_X) -> {error, reason}  end, {ok, 1}),
   {error, reason}       = fmap(fun(_X) -> {error, reason2} end, {error, reason}).
 -endif.
