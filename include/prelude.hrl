@@ -124,6 +124,86 @@
 -define(is_thunk(X), is_function(X, 0)).
 
 %%%_* Logging ==========================================================
+-ifdef(S2_USE_LOGGER).
+
+%% Copied from -include_lib("kernel/include/logger.hrl"),
+%% and renamed/reformatted to fit stdlib2.
+
+-define(debug(A),           ?do_log(debug, [A])).
+-define(debug(A, B),        ?do_log(debug, [A, B])).
+-define(debug(A, B, C),     ?do_log(debug, [A, B, C])).
+
+-define(info(A),            ?do_log(info, [A])).
+-define(info(A, B),         ?do_log(info, [A, B])).
+-define(info(A, B, C),      ?do_log(info, [A, B, C])).
+
+-define(notice(A),          ?do_log(notice, [A])).
+-define(notice(A, B),       ?do_log(notice, [A, B])).
+-define(notice(A, B, C),    ?do_log(notice, [A, B, C])).
+
+-define(warning(A),         ?do_log(warning, [A])).
+-define(warning(A, B),      ?do_log(warning, [A, B])).
+-define(warning(A, B, C),   ?do_log(warning, [A, B, C])).
+
+-define(error(A),           ?do_log(error, [A])).
+-define(error(A, B),        ?do_log(error, [A, B])).
+-define(error(A, B, C),     ?do_log(error, [A, B, C])).
+
+-define(critical(A),        ?do_log(critical, [A])).
+-define(critical(A, B),     ?do_log(critical, [A, B])).
+-define(critical(A, B, C),  ?do_log(critical, [A, B, C])).
+
+-define(alert(A),           ?do_log(alert, [A])).
+-define(alert(A, B),        ?do_log(alert, [A, B])).
+-define(alert(A, B, C),     ?do_log(alert, [A, B, C])).
+
+-define(emergency(A),       ?do_log(emergency, [A])).
+-define(emergency(A, B),    ?do_log(emergency, [A, B])).
+-define(emergency(A, B, C), ?do_log(emergency, [A, B, C])).
+
+-define(location,  #{ mfa  => {?MODULE, ?FUNCTION_NAME, ?FUNCTION_ARITY}
+                    , line => ?LINE
+                    , file => ?FILE
+                    }).
+
+%%%-----------------------------------------------------------------
+%%% Internal,  i.e. not intended for direct use in code - use above
+%%% macros instead!
+-define(do_log(Level, Args),
+        case logger:allow(Level, ?MODULE) of
+            true ->
+                apply(logger, macro_log, [?location, Level|Args]);
+            false ->
+                ok
+        end).
+
+-else.
+
+-ifdef(S2_USE_HUGIN).
+
+-include_lib("hugin/include/hugin.hrl").
+
+%% Hugin only includes the Sentry levels, but it's easy to define aliases for
+%% the others.
+
+-define(notice(A),          ?info(A)).
+-define(notice(A, B),       ?info(A, B)).
+-define(notice(A, B, C),    ?info(A, B, C)).
+
+-define(critical(A),        ?fatal(A)).
+-define(critical(A, B),     ?fatal(A, B)).
+-define(critical(A, B, C),  ?fatal(A, B, C)).
+
+-define(alert(A),           ?fatal(A)).
+-define(alert(A, B),        ?fatal(A, B)).
+-define(alert(A, B, C),     ?fatal(A, B, C)).
+
+-define(emergency(A),       ?fatal(A)).
+-define(emergency(A, B),    ?fatal(A, B)).
+-define(emergency(A, B, C), ?fatal(A, B, C)).
+
+-else.
+
 -ifdef(S2_USE_LAGER).
 
 -compile([{parse_transform, lager_transform}]).
@@ -221,6 +301,10 @@
 -endif. %S2_NOLOG
 
 -endif. %S2_USE_LAGER
+
+-endif. %S2_USE_HUGIN
+
+-endif. %S2_USE_LOGGER
 
 %% Implementation from http://erlang.org/eeps/eep-0045.md
 -define(FUNCTION_STRING,
