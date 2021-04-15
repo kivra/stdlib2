@@ -8,7 +8,9 @@
 -define(__PRELUDE_HRL, true).
 
 -include_lib("stdlib/include/assert.hrl").
+-ifdef(S2_USE_OTP_LOGGER).
 -include_lib("kernel/include/logger.hrl").
+-endif.
 
 %%%_* Assertions =======================================================
 -define(hence(A), ?assert(A)).
