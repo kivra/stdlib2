@@ -96,7 +96,7 @@ update([H|T],        Idx) -> [H|update(T, Idx)];
 update([],           Idx) -> [{Idx, 1}].
 
 
--spec value(vclock()) -> no_return().
+-spec value(vclock()) -> number().
 %% @doc value(C) is the sum of the entries in C.
 value(C) -> lists:sum([N || {_Idx, N} <- C]).
 

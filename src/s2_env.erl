@@ -101,7 +101,7 @@ parse(Sys) ->
         end, Sys))).
 
 set(Envs) ->
-  [ok = set(App, Env) || {App, Env} <- Envs].
+  [ok || {App, Env} <- Envs, [ok] =:= set(App, Env)].
 set(App, Env) ->
   [ok = application:unset_env(App, K)  || {K, _} <- application:get_all_env(App)],
   [ok = application:set_env(App, K, V) || {K, V} <- Env].

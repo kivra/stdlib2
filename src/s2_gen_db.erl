@@ -9,10 +9,6 @@
 -behaviour(gen_server).
 
 %%%_* Exports ==========================================================
-%% gen_db behaviour
--export([ behaviour_info/1
-        ]).
-
 %% gen_db API
 -export([ new/2
         , open/2
@@ -36,23 +32,14 @@
 
 %%%_* Code =============================================================
 %%%_ * gen_db behaviour ------------------------------------------------
-behaviour_info(callbacks) ->
-  [ {do_init,   1}
-  , {do_insert, 2}
-  , {do_lookup, 2}
-  , {do_delete, 2}
-  ];
-behaviour_info(_) -> undefined.
-
 -type db()                       :: _.
-%% -type key()                   :: _.
-%% -type obj()                   :: _.
+-type key()                      :: _.
+-type obj()                      :: _.
 
-%% Uncomment for R15+...
-%% -callback do_init([_])           -> maybe(db(), _).
-%% -callback do_insert(db(), obj()) -> maybe(db(), _).
-%% -callback do_lookup(db(), key()) -> maybe(obj(), _).
-%% -callback do_delete(db(), key()) -> maybe(db(), _).
+-callback do_init([_])           -> maybe(db(), _).
+-callback do_insert(db(), obj()) -> maybe(db(), _).
+-callback do_lookup(db(), key()) -> maybe(obj(), _).
+-callback do_delete(db(), key()) -> maybe(db(), _).
 
 %%%_ * gen_db API ------------------------------------------------------
 new(Name, Opts)  -> ?unlift(gen_server:start({local, regname(Name)},
@@ -70,10 +57,10 @@ call(Name, Op)   -> gen_server:call(regname(Name), Op, infinity).
 regname(Name)    -> s2_atoms:catenate([gen_db_, Name]).
 
 %%%_ * gen_server callbacks --------------------------------------------
--record(s, { mod  :: atom()      %callback module
-           , db   :: db()        %in-memory data
-           , log  :: _           %updates since last snapshot
-           , tref :: reference() %ticker
+-record(s, { mod  :: atom()       %callback module
+           , db   :: db()         %in-memory data
+           , log  :: _            %updates since last snapshot
+           , tref :: timer:tref() %ticker
            }).
 
 init(Opts) ->
@@ -275,8 +262,6 @@ mod_error_test() ->
   with_test_db(fun(DB, _) -> {error, _} = insert(DB, foo) end).
 
 cover_test() ->
-  _         = behaviour_info(callbacks),
-  _         = behaviour_info(foo),
   {ok, bar} = code_change(foo, bar, baz),
   with_test_db(fun(DB, _) ->
     regname(DB) ! info,

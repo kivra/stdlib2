@@ -49,7 +49,7 @@ map(F, Xs, Opts) ->
       {error, {middleman, Rsn}}
   after
     Timeout ->
-      s2_procs:kill(Pid),
+      s2_procs:kill([Pid]),
       erlang:demonitor(Monitor, [flush]),
       {error, timeout}
   end.

@@ -26,6 +26,8 @@
         , init_folsom/1
         ]).
 
+-ignore_xref([init_folsom/1]).
+
 %%%_* Includes =========================================================
 -include("prelude.hrl").
 -ifdef(TEST).
@@ -47,7 +49,6 @@ consult_string_test() ->
   {error, _} = consult_string("{42"),
   {error, _} = consult_string([12345]).
 -endif.
-
 
 init_folsom(Metrics) ->
   ?lift([begin

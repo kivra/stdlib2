@@ -19,13 +19,17 @@ jakob@sleepy.primat.es:~/git/stdlib2$ gmake test
 Manifest
 ========
 * include/:
-    * prelude.hrl        -- Useful macros and type aliases.
+    * prelude.hrl        -- Complete collection of macros and type aliases.
+    * byte.hrl           -- Macros and type aliases for byte unit conversion.
+    * maybe.hrl          -- Macros and type aliases for maybe monads.
+    * time.hrl           -- Macros and type aliases related to time and date.
 * src/:
     * s2_atoms.erl       -- Atom-related utilities.
     * s2_csets.erl       -- Counting sets.
     * s2_env.erl         -- Environment access and setup.
     * s2_export.erl      -- Export unexported functions from the REPL.
     * s2_fs.erl          -- Filesystem-related utilities.
+    * s2_functors.erl    -- The functor typeclass.
     * s2_funs.erl        -- Combinators.
     * s2_gen_db.erl      -- Behaviour for persistent state.
     * s2_gen_lattice.erl -- Behaviour for lattices.
