@@ -50,127 +50,127 @@
 %%%_* Logging ==========================================================
 -ifdef(S2_USE_OTP_LOGGER).
 
--define(debug(StringOrReport),                 ?LOG_DEBUG(StringOrReport)).
--define(debug(StringOrReport, ArgsOrMeta),     ?LOG_DEBUG(StringOrReport, ArgsOrMeta)).
--define(debug(FunOrFormat, Args, Meta),        ?LOG_DEBUG(FunOrFormat, Args, Meta)).
--define(info(StringOrReport),                  ?LOG_INFO(StringOrReport)).
--define(info(StringOrReport, ArgsOrMeta),      ?LOG_INFO(StringOrReport, ArgsOrMeta)).
--define(info(FunOrFormat, Args, Meta),         ?LOG_INFO(FunOrFormat, Args, Meta)).
--define(notice(StringOrReport),                ?LOG_NOTICE(StringOrReport)).
--define(notice(StringOrReport, ArgsOrMeta),    ?LOG_NOTICE(StringOrReport, ArgsOrMeta)).
--define(notice(FunOrFormat, Args, Meta),       ?LOG_NOTICE(FunOrFormat, Args, Meta)).
--define(warning(StringOrReport),               ?LOG_WARNING(StringOrReport)).
--define(warning(StringOrReport, ArgsOrMeta),   ?LOG_WARNING(StringOrReport, ArgsOrMeta)).
--define(warning(FunOrFormat, Args, Meta),      ?LOG_WARNING(FunOrFormat, Args, Meta)).
--define(error(StringOrReport),                 ?LOG_ERROR(StringOrReport)).
--define(error(StringOrReport, ArgsOrMeta),     ?LOG_ERROR(StringOrReport, ArgsOrMeta)).
--define(error(FunOrFormat, Args, Meta),        ?LOG_ERROR(FunOrFormat, Args, Meta)).
--define(critical(StringOrReport),              ?LOG_CRITICAL(StringOrReport)).
--define(critical(StringOrReport, ArgsOrMeta),  ?LOG_CRITICAL(StringOrReport, ArgsOrMeta)).
--define(critical(FunOrFormat, Args, Meta),     ?LOG_CRITICAL(FunOrFormat, Args, Meta)).
--define(alert(StringOrReport),                 ?LOG_ALERT(StringOrReport)).
--define(alert(StringOrReport, ArgsOrMeta),     ?LOG_ALERT(StringOrReport, ArgsOrMeta)).
--define(alert(FunOrFormat, Args, Meta),        ?LOG_ALERT(FunOrFormat, Args, Meta)).
--define(emergency(StringOrReport),             ?LOG_EMERGENCY(StringOrReport)).
--define(emergency(StringOrReport, ArgsOrMeta), ?LOG_EMERGENCY(StringOrReport, ArgsOrMeta)).
--define(emergency(FunOrFormat, Args, Meta),    ?LOG_EMERGENCY(FunOrFormat, Args, Meta)).
+  -define(debug(StringOrReport),                 ?LOG_DEBUG(StringOrReport)).
+  -define(debug(StringOrReport, ArgsOrMeta),     ?LOG_DEBUG(StringOrReport, ArgsOrMeta)).
+  -define(debug(FunOrFormat, Args, Meta),        ?LOG_DEBUG(FunOrFormat, Args, Meta)).
+  -define(info(StringOrReport),                  ?LOG_INFO(StringOrReport)).
+  -define(info(StringOrReport, ArgsOrMeta),      ?LOG_INFO(StringOrReport, ArgsOrMeta)).
+  -define(info(FunOrFormat, Args, Meta),         ?LOG_INFO(FunOrFormat, Args, Meta)).
+  -define(notice(StringOrReport),                ?LOG_NOTICE(StringOrReport)).
+  -define(notice(StringOrReport, ArgsOrMeta),    ?LOG_NOTICE(StringOrReport, ArgsOrMeta)).
+  -define(notice(FunOrFormat, Args, Meta),       ?LOG_NOTICE(FunOrFormat, Args, Meta)).
+  -define(warning(StringOrReport),               ?LOG_WARNING(StringOrReport)).
+  -define(warning(StringOrReport, ArgsOrMeta),   ?LOG_WARNING(StringOrReport, ArgsOrMeta)).
+  -define(warning(FunOrFormat, Args, Meta),      ?LOG_WARNING(FunOrFormat, Args, Meta)).
+  -define(error(StringOrReport),                 ?LOG_ERROR(StringOrReport)).
+  -define(error(StringOrReport, ArgsOrMeta),     ?LOG_ERROR(StringOrReport, ArgsOrMeta)).
+  -define(error(FunOrFormat, Args, Meta),        ?LOG_ERROR(FunOrFormat, Args, Meta)).
+  -define(critical(StringOrReport),              ?LOG_CRITICAL(StringOrReport)).
+  -define(critical(StringOrReport, ArgsOrMeta),  ?LOG_CRITICAL(StringOrReport, ArgsOrMeta)).
+  -define(critical(FunOrFormat, Args, Meta),     ?LOG_CRITICAL(FunOrFormat, Args, Meta)).
+  -define(alert(StringOrReport),                 ?LOG_ALERT(StringOrReport)).
+  -define(alert(StringOrReport, ArgsOrMeta),     ?LOG_ALERT(StringOrReport, ArgsOrMeta)).
+  -define(alert(FunOrFormat, Args, Meta),        ?LOG_ALERT(FunOrFormat, Args, Meta)).
+  -define(emergency(StringOrReport),             ?LOG_EMERGENCY(StringOrReport)).
+  -define(emergency(StringOrReport, ArgsOrMeta), ?LOG_EMERGENCY(StringOrReport, ArgsOrMeta)).
+  -define(emergency(FunOrFormat, Args, Meta),    ?LOG_EMERGENCY(FunOrFormat, Args, Meta)).
 
 -else.
--ifdef(S2_USE_LAGER).
+  -ifdef(S2_USE_LAGER).
 
--compile([{parse_transform, lager_transform}]).
+    -compile([{parse_transform, lager_transform}]).
 
--define(debug(Format),           lager:debug(Format, [])).
--define(debug(Format, Args),     lager:debug(Format, Args)).
--define(info(Format),            lager:info(Format, [])).
--define(info(Format, Args),      lager:info(Format, Args)).
--define(notice(Format),          lager:notice(Format, [])).
--define(notice(Format, Args),    lager:notice(Format, Args)).
+    -define(debug(Format),           lager:debug(Format, [])).
+    -define(debug(Format, Args),     lager:debug(Format, Args)).
+    -define(info(Format),            lager:info(Format, [])).
+    -define(info(Format, Args),      lager:info(Format, Args)).
+    -define(notice(Format),          lager:notice(Format, [])).
+    -define(notice(Format, Args),    lager:notice(Format, Args)).
 
--ifdef(S2_USE_LAGER_BUT_NOT_FOR_ERRORS).
+    -ifdef(S2_USE_LAGER_BUT_NOT_FOR_ERRORS).
 
--define(warning(Format),         error_logger:warning_msg(Format, [])).
--define(warning(Format, Args),   error_logger:warning_msg(Format, Args)).
--define(error(Format),           error_logger:error_msg(Format)).
--define(error(Format, Args),     error_logger:error_msg(Format, Args)).
--define(critical(Format),        error_logger:error_msg(Format)).
--define(critical(Format, Args),  error_logger:error_msg(Format, Args)).
--define(alert(Format),           error_logger:error_msg(Format)).
--define(alert(Format, Args),     error_logger:error_msg(Format, Args)).
--define(emergency(Format),       error_logger:error_msg(Format)).
--define(emergency(Format, Args), error_logger:error_msg(Format, Args)).
+      -define(warning(Format),         error_logger:warning_msg(Format, [])).
+      -define(warning(Format, Args),   error_logger:warning_msg(Format, Args)).
+      -define(error(Format),           error_logger:error_msg(Format)).
+      -define(error(Format, Args),     error_logger:error_msg(Format, Args)).
+      -define(critical(Format),        error_logger:error_msg(Format)).
+      -define(critical(Format, Args),  error_logger:error_msg(Format, Args)).
+      -define(alert(Format),           error_logger:error_msg(Format)).
+      -define(alert(Format, Args),     error_logger:error_msg(Format, Args)).
+      -define(emergency(Format),       error_logger:error_msg(Format)).
+      -define(emergency(Format, Args), error_logger:error_msg(Format, Args)).
 
--else. %default
+    -else. %default
 
--define(warning(Format),         lager:warning(Format, [])).
--define(warning(Format, Args),   lager:warning(Format, Args)).
--define(error(Format),           lager:error(Format, [])).
--define(error(Format, Args),     lager:error(Format, Args)).
--define(critical(Format),        lager:critical(Format, [])).
--define(critical(Format, Args),  lager:critical(Format, Args)).
--define(alert(Format),           lager:alert(Format, [])).
--define(alert(Format, Args),     lager:alert(Format, Args)).
--define(emergency(Format),       lager:emergency(Format, [])).
--define(emergency(Format, Args), lager:emergency(Format, Args)).
+      -define(warning(Format),         lager:warning(Format, [])).
+      -define(warning(Format, Args),   lager:warning(Format, Args)).
+      -define(error(Format),           lager:error(Format, [])).
+      -define(error(Format, Args),     lager:error(Format, Args)).
+      -define(critical(Format),        lager:critical(Format, [])).
+      -define(critical(Format, Args),  lager:critical(Format, Args)).
+      -define(alert(Format),           lager:alert(Format, [])).
+      -define(alert(Format, Args),     lager:alert(Format, Args)).
+      -define(emergency(Format),       lager:emergency(Format, [])).
+      -define(emergency(Format, Args), lager:emergency(Format, Args)).
 
--endif. %S2_USE_LAGER_BUT_NOT_FOR_ERRORS
+    -endif. %S2_USE_LAGER_BUT_NOT_FOR_ERRORS
 
--else.
--ifdef(S2_DEBUG).
--define(debug(Msg),            ?debug(Msg, [])).
--define(debug(Fmt, As),        ?do_debug("~p:~s:~p: Debug: " Fmt "~n",
-                                         [self(), ?FILE, ?LINE|As])).
--else.
--define(debug(Msg),            ok).
--define(debug(Fmt, As),        ok).
--endif. %S2_DEBUG
+  -else.
+    -ifdef(S2_DEBUG).
+      -define(debug(Msg),            ?debug(Msg, [])).
+      -define(debug(Fmt, As),        ?do_debug("~p:~s:~p: Debug: " Fmt "~n",
+                                              [self(), ?FILE, ?LINE|As])).
+    -else.
+      -define(debug(Msg),            ok).
+      -define(debug(Fmt, As),        ok).
+    -endif. %S2_DEBUG
 
--define(info(Msg),             ?info(Msg, [])).
--define(info(Fmt, As),         ?do_info("~p:~s:~p: Info: " Fmt "~n",
-                                        [self(), ?FILE, ?LINE|As])).
--define(notice(Msg),           ?notice(Msg, [])).
--define(notice(Fmt, As),       ?do_notice("~p:~s:~p: Notice: " Fmt "~n",
-                                          [self(), ?FILE, ?LINE|As])).
--define(warning(Msg),          ?warning(Msg, [])).
--define(warning(Fmt, As),      ?do_warning("~p:~s:~p: Warning: " Fmt "~n",
-                                           [self(), ?FILE, ?LINE|As])).
--define(error(Msg),            ?error(Msg, [])).
--define(error(Fmt, As),        ?do_error("~p:~s:~p: Error: " Fmt "~n",
-                                         [self(), ?FILE, ?LINE|As])).
--define(critical(Msg),         ?critical(Msg, [])).
--define(critical(Fmt, As),     ?do_critical("~p:~s:~p: Critical: " Fmt "~n",
+    -define(info(Msg),             ?info(Msg, [])).
+    -define(info(Fmt, As),         ?do_info("~p:~s:~p: Info: " Fmt "~n",
                                             [self(), ?FILE, ?LINE|As])).
--define(alert(Msg),            ?alert(Msg, [])).
--define(alert(Fmt, As),        ?do_alert("~p:~s:~p: Alert: " Fmt "~n",
-                                         [self(), ?FILE, ?LINE|As])).
--define(emergency(Msg),        ?emergency(Msg, [])).
--define(emergency(Fmt, As),    ?do_emergency("~p:~s:~p: Emergency: " Fmt "~n",
-                                             [self(), ?FILE, ?LINE|As])).
+    -define(notice(Msg),           ?notice(Msg, [])).
+    -define(notice(Fmt, As),       ?do_notice("~p:~s:~p: Notice: " Fmt "~n",
+                                              [self(), ?FILE, ?LINE|As])).
+    -define(warning(Msg),          ?warning(Msg, [])).
+    -define(warning(Fmt, As),      ?do_warning("~p:~s:~p: Warning: " Fmt "~n",
+                                              [self(), ?FILE, ?LINE|As])).
+    -define(error(Msg),            ?error(Msg, [])).
+    -define(error(Fmt, As),        ?do_error("~p:~s:~p: Error: " Fmt "~n",
+                                            [self(), ?FILE, ?LINE|As])).
+    -define(critical(Msg),         ?critical(Msg, [])).
+    -define(critical(Fmt, As),     ?do_critical("~p:~s:~p: Critical: " Fmt "~n",
+                                                [self(), ?FILE, ?LINE|As])).
+    -define(alert(Msg),            ?alert(Msg, [])).
+    -define(alert(Fmt, As),        ?do_alert("~p:~s:~p: Alert: " Fmt "~n",
+                                            [self(), ?FILE, ?LINE|As])).
+    -define(emergency(Msg),        ?emergency(Msg, [])).
+    -define(emergency(Fmt, As),    ?do_emergency("~p:~s:~p: Emergency: " Fmt "~n",
+                                                [self(), ?FILE, ?LINE|As])).
 
--ifdef(S2_NOLOG).
+    -ifdef(S2_NOLOG).
 
--define(do_debug(Fmt, As),     ok).
--define(do_info(Fmt, As),      ok).
--define(do_notice(Fmt, As),    ok).
--define(do_warning(Fmt, As),   ok).
--define(do_error(Fmt, As),     ok).
--define(do_critical(Fmt, As),  ok).
--define(do_alert(Fmt, As),     ok).
--define(do_emergency(Fmt, As), ok).
+      -define(do_debug(Fmt, As),     ok).
+      -define(do_info(Fmt, As),      ok).
+      -define(do_notice(Fmt, As),    ok).
+      -define(do_warning(Fmt, As),   ok).
+      -define(do_error(Fmt, As),     ok).
+      -define(do_critical(Fmt, As),  ok).
+      -define(do_alert(Fmt, As),     ok).
+      -define(do_emergency(Fmt, As), ok).
 
--else. %default
+    -else. %default
 
--define(do_debug(Fmt, As),     error_logger:info_msg(Fmt, As)).
--define(do_info(Fmt, As),      error_logger:info_msg(Fmt, As)).
--define(do_notice(Fmt, As),    error_logger:info_msg(Fmt, As)).
--define(do_warning(Fmt, As),   error_logger:warning_msg(Fmt, As)).
--define(do_error(Fmt, As),     error_logger:warning_msg(Fmt, As)).
--define(do_critical(Fmt, As),  error_logger:error_msg(Fmt, As)).
--define(do_alert(Fmt, As),     error_logger:error_msg(Fmt, As)).
--define(do_emergency(Fmt, As), error_logger:error_msg(Fmt, As)).
+      -define(do_debug(Fmt, As),     error_logger:info_msg(Fmt, As)).
+      -define(do_info(Fmt, As),      error_logger:info_msg(Fmt, As)).
+      -define(do_notice(Fmt, As),    error_logger:info_msg(Fmt, As)).
+      -define(do_warning(Fmt, As),   error_logger:warning_msg(Fmt, As)).
+      -define(do_error(Fmt, As),     error_logger:warning_msg(Fmt, As)).
+      -define(do_critical(Fmt, As),  error_logger:error_msg(Fmt, As)).
+      -define(do_alert(Fmt, As),     error_logger:error_msg(Fmt, As)).
+      -define(do_emergency(Fmt, As), error_logger:error_msg(Fmt, As)).
 
--endif. %S2_NOLOG
--endif. %S2_USE_LAGER
+    -endif. %S2_NOLOG
+  -endif. %S2_USE_LAGER
 -endif. %S2_USE_OTP_LOGGER
 
 %% Implementation from http://erlang.org/eeps/eep-0045.md
