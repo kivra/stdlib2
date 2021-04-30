@@ -75,7 +75,8 @@
 -define(emergency(StringOrReport, ArgsOrMeta), ?LOG_EMERGENCY(StringOrReport, ArgsOrMeta)).
 -define(emergency(FunOrFormat, Args, Meta),    ?LOG_EMERGENCY(FunOrFormat, Args, Meta)).
 
--elif(S2_USE_LAGER).
+-else.
+-ifdef(S2_USE_LAGER).
 
 -compile([{parse_transform, lager_transform}]).
 
@@ -115,7 +116,6 @@
 -endif. %S2_USE_LAGER_BUT_NOT_FOR_ERRORS
 
 -else.
-
 -ifdef(S2_DEBUG).
 -define(debug(Msg),            ?debug(Msg, [])).
 -define(debug(Fmt, As),        ?do_debug("~p:~s:~p: Debug: " Fmt "~n",
@@ -170,8 +170,8 @@
 -define(do_emergency(Fmt, As), error_logger:error_msg(Fmt, As)).
 
 -endif. %S2_NOLOG
-
 -endif. %S2_USE_LAGER
+-endif. %S2_USE_OTP_LOGGER
 
 %% Implementation from http://erlang.org/eeps/eep-0045.md
 -define(FUNCTION_STRING,
