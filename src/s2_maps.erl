@@ -191,7 +191,9 @@ invert_test() ->
                    , <<"Val3">> => [<<"Key3">>, <<"Key1">>]
                    , <<"Val4">> => [<<"Key2">>]},
   ?assertEqual(InvertedMap, invert(Map)),
-  ?assertEqual(Map,         invert(invert(Map))),
+  ?assertEqual(maps:new(),  invert(maps:new())),
+  ?assertEqual(?fmap(fun lists:sort/1, Map),
+               ?fmap(fun lists:sort/1, invert(invert(Map)))).
 
 -endif.
 
