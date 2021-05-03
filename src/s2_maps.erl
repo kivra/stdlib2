@@ -25,6 +25,7 @@
 -export([ delete/2
         , get/2
         , get/3
+        , invert/1
         , new/0
         , set/3
         , to_list/1
@@ -120,6 +121,16 @@ is_dict(Dict) ->
     _        -> false
   end.
 
+invert(Map) ->
+  maps:fold(fun(Key, Vals0, Acc0) when is_list(Vals0) ->
+    lists:foldl(fun(Val, Acc1) ->
+                  maps:update_with(Val,
+                                   fun(Vals1) -> [Key | Vals1] end,
+                                   [Key],
+                                   Acc1)
+                end, Acc0, Vals0)
+  end, #{}, Map).
+
 %%%_* Tests ============================================================
 -ifdef(TEST).
 
@@ -170,6 +181,17 @@ to_list_test() ->
   , {[foo, bar,   snarf], 0}
   ] = to_list(Map),
   ok.
+
+invert_test() ->
+  Map           = #{ <<"Key1">> => [<<"Val1">>, <<"Val2">>, <<"Val3">>]
+                   , <<"Key2">> => [<<"Val1">>, <<"Val4">>]
+                   , <<"Key3">> => [<<"Val2">>, <<"Val3">>]},
+  InvertedMap   = #{ <<"Val1">> => [<<"Key2">>, <<"Key1">>]
+                   , <<"Val2">> => [<<"Key3">>, <<"Key1">>]
+                   , <<"Val3">> => [<<"Key3">>, <<"Key1">>]
+                   , <<"Val4">> => [<<"Key2">>]},
+  ?assertEqual(InvertedMap, invert(Map)),
+  ?assertEqual(Map,         invert(invert(Map))),
 
 -endif.
 
