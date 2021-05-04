@@ -11,9 +11,11 @@
         , fmap/2
         , lift/1
         , lift/2
+        , liftM/2
         , map/2
         , reduce/2
         , reduce/3
+        , sequence/1
         , to_bool/1
         , unlift/1
         , unlift/2
@@ -108,6 +110,20 @@ lift_unlift_test() ->
   42             = unlift(fun(X) -> {ok, X} end, 42).
 -endif.
 
+-spec liftM(fun(), [maybe(_, B)]) -> maybe(_, B).
+%% @doc lift a function F into the Maybe monad.
+liftM(F, Maybes) when is_list(Maybes) and is_function(F, length(Maybes)) ->
+  ?fmap(fun(Args) -> apply(F, Args) end, sequence(Maybes)).
+
+-ifdef(TEST).
+liftM_test() ->
+  Add3      = fun(A, B, C) -> A + B + C end,
+  ValsOK    = [{ok, 1}, {ok, 2},         {ok, 3}], 
+  ValsError = [{ok, 1}, {error, reason}, {ok, 3}],
+  ?assertEqual({ok, 6},         liftM(Add3, ValsOK)),
+  ?assertEqual({error, reason}, liftM(Add3, ValsError)),
+  ?assertEqual({ok, 6},         ?liftM(Add3, {ok, 1}, {ok, 2}, {ok, 3})).
+-endif.
 
 -spec map(fun(), [_]) -> maybe(_, _).
 %%@doc map(F, Xs) is the result of mapping F over Xs inside the maybe
@@ -137,6 +153,19 @@ reduce_test() ->
   {error, _} = reduce(fun(X, Y) -> X + Y       end, [0, foo]).
 -endif.
 
+-spec sequence([maybe(A, B)]) -> maybe([A], B).
+sequence(Maybes) when is_list(Maybes) ->
+  ?fmap(fun lists:reverse/1,
+        ?lift(s2_lists:foldl_while(fun({ok, Val}, Acc)  -> {ok, [Val | Acc]};
+                                      ({error, Val}, _) -> {stop, {error, Val}}
+                                   end, [], Maybes))).
+
+-ifdef(TEST).
+sequence_test() ->
+  ?assertEqual({ok, [1, 2, 3]}, sequence([{ok, 1}, {ok, 2},      {ok, 3}])),
+  ?assertEqual({error, foo},    sequence([{ok, 1}, {error, foo}, {error, bar}])),
+  ?assertEqual({ok, []},        sequence([])).
+-endif.
 
 -spec to_bool(maybe(_, _)) -> boolean().
 %% @doc to_bool(X) is the boolean representation of the maybe-value X.
