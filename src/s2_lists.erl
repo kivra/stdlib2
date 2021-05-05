@@ -15,7 +15,6 @@
         , dissoc/2
         , drop/2
         , dsort/1
-        , foldl_while/3
         , intersperse/2
         , is_permutation/2
         , partition/2
@@ -105,20 +104,6 @@ drop_test() ->
   []    = drop(2, []).
 -endif.
 
-foldl_while(F, Acc, [Elm | Tail]) when is_function(F, 2) ->
-  case F(Elm, Acc) of
-    {ok, Acc1}   -> foldl_while(F, Acc1, Tail);
-    {stop, Acc1} -> Acc1
-  end;
-foldl_while(_F, Acc, []) -> Acc.
-
--ifdef(TEST).
-foldl_while_test() ->
-  ?assertEqual(10, foldl_while(fun(N, Acc) when Acc < 7  -> {ok, N + Acc};
-                                  (_N, Acc)              -> {stop, Acc} end,
-                               0, [1, 2, 3, 4, 5, 6, 7, 8, 9])).
-
--endif.
 
 -spec intersperse(_, [_]) -> [_].
 %% @doc intersperse(X, Ys) is Ys with X interspersed.
