@@ -70,24 +70,7 @@
              ___Err
          end)).
 
--define(liftM(F, A1),
-        s2_maybe:liftM(F, [A1])).
--define(liftM(F, A1, A2),
-        s2_maybe:liftM(F, [A1, A2])).
--define(liftM(F, A1, A2, A3),
-        s2_maybe:liftM(F, [A1, A2, A3])).
--define(liftM(F, A1, A2, A3, A4),
-        s2_maybe:liftM(F, [A1, A2, A3, A4])).
--define(liftM(F, A1, A2, A3, A4, A5),
-        s2_maybe:liftM(F, [A1, A2, A3, A4, A5])).
--define(liftM(F, A1, A2, A3, A4, A5, A6),
-        s2_maybe:liftM(F, [A1, A2, A3, A4, A5, A6])).
--define(liftM(F, A1, A2, A3, A4, A5, A6, A7),
-        s2_maybe:liftM(F, [A1, A2, A3, A4, A5, A6, A7])).
--define(liftM(F, A1, A2, A3, A4, A5, A6, A7, A8),
-        s2_maybe:liftM(F, [A1, A2, A3, A4, A5, A6, A7, A8])).
--define(liftM(F, A1, A2, A3, A4, A5, A6, A7, A8, A9),
-        s2_maybe:liftM(F, [A1, A2, A3, A4, A5, A6, A7, A8, A9])).
+-define(liftm(F, Args), s2_maybe:liftm(F, Args)).
 
 -define(thunk(E0),
         fun() -> E0 end).

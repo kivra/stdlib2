@@ -112,6 +112,14 @@ foldl_while(F, Acc, [Elm | Tail]) when is_function(F, 2) ->
   end;
 foldl_while(_F, Acc, []) -> Acc.
 
+-ifdef(TEST).
+foldl_while_test() ->
+  ?assertEqual(10, foldl_while(fun(N, Acc) when Acc < 7  -> {ok, N + Acc};
+                                  (_N, Acc)              -> {stop, Acc} end,
+                               0, [1, 2, 3, 4, 5, 6, 7, 8, 9])).
+
+-endif.
+
 -spec intersperse(_, [_]) -> [_].
 %% @doc intersperse(X, Ys) is Ys with X interspersed.
 intersperse(X, Ys) ->

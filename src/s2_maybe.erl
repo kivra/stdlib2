@@ -11,7 +11,7 @@
         , fmap/2
         , lift/1
         , lift/2
-        , liftM/2
+        , liftm/2
         , map/2
         , reduce/2
         , reduce/3
@@ -110,9 +110,9 @@ lift_unlift_test() ->
   42             = unlift(fun(X) -> {ok, X} end, 42).
 -endif.
 
--spec liftM(fun(), [maybe(_, B)]) -> maybe(_, B).
+-spec liftm(fun(), [maybe(_, B)]) -> maybe(_, B).
 %% @doc lift a function F into the Maybe monad.
-liftM(F, Maybes) when is_list(Maybes) and is_function(F, length(Maybes)) ->
+liftm(F, Maybes) when is_list(Maybes) and is_function(F, length(Maybes)) ->
   ?fmap(fun(Args) -> apply(F, Args) end, sequence(Maybes)).
 
 -ifdef(TEST).
@@ -120,9 +120,9 @@ liftM_test() ->
   Add3      = fun(A, B, C) -> A + B + C end,
   ValsOK    = [{ok, 1}, {ok, 2},         {ok, 3}], 
   ValsError = [{ok, 1}, {error, reason}, {ok, 3}],
-  ?assertEqual({ok, 6},         liftM(Add3, ValsOK)),
-  ?assertEqual({error, reason}, liftM(Add3, ValsError)),
-  ?assertEqual({ok, 6},         ?liftM(Add3, {ok, 1}, {ok, 2}, {ok, 3})).
+  ?assertEqual({ok, 6},         liftm(Add3, ValsOK)),
+  ?assertEqual({error, reason}, liftm(Add3, ValsError)),
+  ?assertEqual({ok, 6},         ?liftm(Add3, [{ok, 1}, {ok, 2}, {ok, 3}])).
 -endif.
 
 -spec map(fun(), [_]) -> maybe(_, _).
@@ -136,7 +136,6 @@ map_test() ->
   {ok, [1, 2]} = map(fun(X) -> {ok, X + 1} end, [0, 1]),
   {error, _}   = map(fun(X) -> X + 1       end, [0, foo]).
 -endif.
-
 
 -spec reduce(fun(), [_]) -> maybe(_, _).
 %% @doc reduce(F, Xs) is the result of reducing Xs to F inside the maybe
@@ -154,6 +153,8 @@ reduce_test() ->
 -endif.
 
 -spec sequence([maybe(A, B)]) -> maybe([A], B).
+%% @doc sequence(Maybes) evaluates each maybe in a list of maybes and collects
+%% the results inside the maybe monad.
 sequence(Maybes) when is_list(Maybes) ->
   ?fmap(fun lists:reverse/1,
         ?lift(s2_lists:foldl_while(fun({ok, Val}, Acc)  -> {ok, [Val | Acc]};
