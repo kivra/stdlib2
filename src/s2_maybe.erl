@@ -153,9 +153,10 @@ reduce_test() ->
   {error, _} = reduce(fun(X, Y) -> X + Y       end, [0, foo]).
 -endif.
 
--spec sequence([maybe(A, B)] | [thunk(maybe(A, B))]) -> maybe([A], B).
-%% @doc sequence(Maybes) evaluates each maybe in a list of maybes and collects
-%% the results inside the maybe monad. Supports lazy evaluation of thunks.
+-spec sequence(collection(maybe(A, B)) | collection(thunk(maybe(A, B)))) -> maybe(collection(A), B).
+%% @doc sequence(Maybes) evaluates each maybe in a collectiom of maybes and
+%% collects the results inside the maybe monad. Supports lazy evaluation of
+%% thunks.
 sequence([F | Maybes]) when ?is_thunk(F) ->
   sequence([F() | Maybes]);
 sequence([{ok, Val} | Maybes]) ->
@@ -163,14 +164,21 @@ sequence([{ok, Val} | Maybes]) ->
 sequence([{error, Reason} | _Maybes]) ->
   {error, Reason};
 sequence([]) ->
-  ?lift([]).
+  ?lift([]);
+sequence(Map) when is_map(Map) ->
+  {Keys, Vals} = lists:unzip(maps:to_list(Map)),
+  ?fmap(fun(Sequenced) -> maps:from_list(lists:zip(Keys, Sequenced)) end,
+        sequence(Vals)).
 
 -ifdef(TEST).
 sequence_test() ->
   ?assertEqual({ok, [1, 2, 3]}, sequence([{ok, 1}, {ok, 2}, {ok, 3}])),
   ?assertEqual({error, foo},    sequence([{ok, 1}, {error, foo}, {error, bar}])),
   ?assertEqual({ok, []},        sequence([])),
-  ?assertEqual({error, foo},    sequence([?thunk({ok, 1}), ?thunk({error, foo})])).
+  ?assertEqual({error, foo},    sequence([?thunk({ok, 1}), ?thunk({error, foo})])),
+  ?assertEqual({ok, #{a => 1, b => 2}}, sequence(#{a => {ok, 1}, b => {ok, 2}})),
+  ?assertEqual({error, foo},            sequence(#{a => {ok, 1}, b => {error, foo}})),
+  ?assertEqual({error, foo},            sequence(#{a => {ok, 1}, b => ?thunk({error, foo})})).
 -endif.
 
 -spec to_bool(maybe(_, _)) -> boolean().

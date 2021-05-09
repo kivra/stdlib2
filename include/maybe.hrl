@@ -4,8 +4,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%_* Types ============================================================
--type functor(A)  :: s2_functors:functor(A).
--type thunk(A)    :: fun(() -> A).
+-type functor(A)    :: s2_functors:functor(A).
+-type thunk(A)      :: fun(() -> A).
+-type collection(A) :: [A] | #{_ := A}.
 
 -type ok(A)       :: {ok, A}.
 -type error(A)    :: {error, A}.
