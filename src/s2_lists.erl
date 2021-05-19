@@ -15,6 +15,7 @@
         , dissoc/2
         , drop/2
         , dsort/1
+        , foldl_while/3
         , intersperse/2
         , is_permutation/2
         , partition/2
@@ -104,6 +105,25 @@ drop_test() ->
   []    = drop(2, []).
 -endif.
 
+-spec foldl_while(fun((A, B) -> {ok | error | stop, B}), B, [A]) -> B.
+%% @doc foldl_while(F, Acc, Xs) folds Xs while F returns {ok, Acc}, and
+%% returns Acc immediately if F returns {error, Acc} or {stop, Acc}.
+foldl_while(F, Acc, List) -> do_foldl_while(F, {ok, Acc}, List).
+
+do_foldl_while(_F, {stop, Acc}, _List)      -> Acc;
+do_foldl_while(_F, {error, Acc}, _List)     -> Acc;
+do_foldl_while(_F, {ok, Acc}, [])           -> Acc;
+do_foldl_while(F, {ok, Acc}, [Head | Tail]) -> do_foldl_while(F, F(Head, Acc), Tail).
+
+-ifdef(TEST).
+foldl_while_test() ->
+  Fun = fun(Elm, Acc) when Acc > -7      -> {ok, Acc - Elm};
+           (_Elm, Acc) when is_atom(Acc) -> {error, Acc};
+           (_Elm, Acc)                   -> {stop, Acc} end,
+  ?assertEqual(-10, foldl_while(Fun, 0, [1, 2, 3, 4, 5, 6, 7, 8, 9])),
+  ?assertEqual(0, foldl_while(Fun, 0, [])),
+  ?assertEqual(foo, foldl_while(Fun, foo, [])).
+-endif.
 
 -spec intersperse(_, [_]) -> [_].
 %% @doc intersperse(X, Ys) is Ys with X interspersed.
