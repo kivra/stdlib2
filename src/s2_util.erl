@@ -24,6 +24,7 @@
 %%%_* Exports ==========================================================
 -export([ consult_string/1
         , init_folsom/1
+        , ensure_map/1
         ]).
 
 -ignore_xref([init_folsom/1]).
@@ -60,6 +61,14 @@ init_folsom(Metrics) ->
            folsom_metrics:tag_metric(A, {func, Func}),
            [folsom_metrics:tag_metric(A, {ret, Ret}) || Ret <- Rest]
          end || {Type, [App, Mod, Func|Rest] = Name} <- Metrics]).
+
+-spec ensure_map(map() | list({atom(),any()})) -> map().
+%% @doc Ensure parameters to OTP logger is a map
+ensure_map(Map) when is_map(Map) ->
+  Map;
+ensure_map(List) ->
+  maps:from_list(List).
+
 
 %%%_* Emacs ============================================================
 %%% Local Variables:
