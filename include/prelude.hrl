@@ -75,7 +75,38 @@
   -define(emergency(StringOrReport, ArgsOrMeta), ?LOG_EMERGENCY(StringOrReport, ArgsOrMeta)).
   -define(emergency(FunOrFormat, Args, Meta),    ?LOG_EMERGENCY(FunOrFormat, Args, Meta)).
 
+  -define(failed(Rsn, Extras)
+        , ?error( #{ reason => Rsn
+                   , extras => s2_util:ensure_map(Extras)})).
+  -define(failed(Rsn)
+        , ?failed(Rsn, [])).
+
+  -define(exception(Class, Reason, Stacktrace, Extras)
+        , ?error(#{ class => Class
+                  , reason => Reason
+                  , stacktrace => Stacktrace
+                  , extras => s2_util:ensure_map(Extras)})).
+
+  -define(exception(Class, Reason, Stacktrace)
+           , ?exception(Class, Reason, Stacktrace, [])).
 -else.
+
+  -define(failed(Rsn, Extras), ?error( "Error: ~p"
+                                     , [ {failed, Rsn
+                                         , [ {function, ?FUNCTION_BIN}
+                                           , {line,     ?LINE}
+                                             | Extras
+                                           ]}])).
+  -define(failed(Rsn),         ?failed(Rsn, [])).
+
+  -define(exception(Class, Reason, Stacktrace, Extras)
+         , ?error( "Exception: ~p\n"
+                   "Extras: ~p"
+                 , [{{Class, Reason}, Stacktrace}, Extras])).
+
+  -define(exception(Class, Reason, Stacktrace)
+         , ?exception(Class, Reason, Stacktrace, [])).
+
   -ifdef(S2_USE_LAGER).
 
     -compile([{parse_transform, lager_transform}]).
@@ -181,14 +212,6 @@
 
 -define(FUNCTION_BIN, iolist_to_binary(?FUNCTION_STRING)).
 
--define(failed(Rsn, Extras), ?error( "Error: ~p"
-                                   , [ {failed, Rsn
-                                       , [ {function, ?FUNCTION_BIN}
-                                         , {line,     ?LINE}
-                                         | Extras
-                                         ]}])).
--define(failed(Rsn),         ?failed(Rsn, [])).
-
 %% Structured warning
 %%
 %% * Good to have when sending warnings to Sentry
@@ -206,14 +229,6 @@
        ).
 -define(warn(Format, Args), ?warn(Format, Args, [])).
 -define(warn(Format), ?warn(Format, [], [])).
-
--define( exception(Class, Reason, Stacktrace, Extras)
-       , ?error( "Exception: ~p\n"
-                 "Extras: ~p"
-               , [{{Class, Reason}, Stacktrace}, Extras])).
-
--define( exception(Class, Reason, Stacktrace)
-       , ?exception(Class, Reason, Stacktrace, [])).
 
 %%%_* Metrics ==========================================================
 %% Luke Gorrie's favourite profiling macro.
