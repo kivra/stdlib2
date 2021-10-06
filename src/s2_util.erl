@@ -25,6 +25,7 @@
 -export([ consult_string/1
         , init_folsom/1
         , ensure_map/1
+        , add_audit/1
         ]).
 
 -ignore_xref([init_folsom/1]).
@@ -68,6 +69,16 @@ ensure_map(Map) when is_map(Map) ->
   Map;
 ensure_map(List) ->
   maps:from_list(List).
+
+-spec add_audit(map()) -> map().
+add_audit(Meta) ->
+  Domains = maps:get(domain, Meta, []),
+  case lists:member(audit, Domains) of
+    true ->
+      Meta;
+    false ->
+      Meta#{domain => [audit|Domains]}
+  end.
 
 
 %%%_* Emacs ============================================================

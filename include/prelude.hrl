@@ -50,6 +50,31 @@
 %%%_* Logging ==========================================================
 -ifdef(S2_USE_OTP_LOGGER).
 
+  %% NOTE: Audit is only implemented for OTP logger
+  -define(audit(_StringOrReport),
+          begin
+            ?info(_StringOrReport,
+                  s2_util:add_audit(#{}))
+          end).
+  -define(audit(_StringOrReport, _ArgsOrMeta),
+          begin
+            case is_map(_ArgsOrMeta) of
+              true ->
+                ?info(_StringOrReport,
+                      s2_util:add_audit(_ArgsOrMeta));
+              false ->
+                ?info(_StringOrReport,
+                      _ArgsOrMeta,
+                      s2_util:add_audit(#{}))
+            end
+          end).
+  -define(audit(_FunOrFormat, _Args, _Meta0),
+          begin
+            ?info(_FunOrFormat,
+                  _Args,
+                  s2_util:add_audit(_Meta0))
+          end).
+
   -define(debug(StringOrReport),                 ?LOG_DEBUG(StringOrReport)).
   -define(debug(StringOrReport, ArgsOrMeta),     ?LOG_DEBUG(StringOrReport, ArgsOrMeta)).
   -define(debug(FunOrFormat, Args, Meta),        ?LOG_DEBUG(FunOrFormat, Args, Meta)).
@@ -89,6 +114,7 @@
 
   -define(exception(Class, Reason, Stacktrace)
            , ?exception(Class, Reason, Stacktrace, [])).
+
 -else.
 
   -define(failed(Rsn, Extras), ?error( "Error: ~p"
@@ -103,7 +129,6 @@
          , ?error( "Exception: ~p\n"
                    "Extras: ~p"
                  , [{{Class, Reason}, Stacktrace}, Extras])).
-
   -define(exception(Class, Reason, Stacktrace)
          , ?exception(Class, Reason, Stacktrace, [])).
 
