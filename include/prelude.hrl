@@ -75,20 +75,12 @@
   -define(emergency(StringOrReport, ArgsOrMeta), ?LOG_EMERGENCY(StringOrReport, ArgsOrMeta)).
   -define(emergency(FunOrFormat, Args, Meta),    ?LOG_EMERGENCY(FunOrFormat, Args, Meta)).
 
-  -define(failed(Rsn, Extras)
-        , ?error( #{ reason => Rsn
-                   , extras => s2_util:ensure_map(Extras)})).
-  -define(failed(Rsn)
-        , ?failed(Rsn, [])).
+  -define(failed(Rsn, Extras),                   ?LOG_ERROR(fun s2_util:report_failed/1, [Rsn, Extras])).
+  -define(failed(Rsn),                           ?failed(Rsn, #{})).
 
-  -define(exception(Class, Reason, Stacktrace, Extras)
-        , ?error(#{ class => Class
-                  , reason => Reason
-                  , stacktrace => Stacktrace
-                  , extras => s2_util:ensure_map(Extras)})).
+  -define(exception(C, R, S, E),                 ?LOG_ERROR(fun s2_util:report_exception/1, [C, R, S, E])).
+  -define(exception(Class, Reason, Stacktrace),  ?exception(Class, Reason, Stacktrace, #{})).
 
-  -define(exception(Class, Reason, Stacktrace)
-           , ?exception(Class, Reason, Stacktrace, [])).
 -else.
 
   -define(failed(Rsn, Extras), ?error( "Error: ~p"
