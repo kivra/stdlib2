@@ -25,6 +25,8 @@
 -export([ consult_string/1
         , init_folsom/1
         , ensure_map/1
+        , report_failed/1
+        , report_exception/1
         ]).
 
 -ignore_xref([init_folsom/1]).
@@ -68,6 +70,31 @@ ensure_map(Map) when is_map(Map) ->
   Map;
 ensure_map(List) ->
   maps:from_list(List).
+
+-spec report_failed( list() ) -> map().
+report_failed([Reason, Extras]) ->
+    #{ reason => Reason
+     , extras => ensure_map(Extras)
+     }.
+
+-spec report_exception( list() ) -> map().
+report_exception([Class, Reason, Stacktrace, Extras]) ->
+    #{ reason => Reason
+     , exception_class => Class
+     , stacktrace => stacktrace_to_map(Stacktrace)
+     , extras => ensure_map(Extras)
+     }.
+
+stacktrace_to_map([]) ->
+    [];
+stacktrace_to_map([{Module, Function, Arity, Props}|Rest]) ->
+    Frame = #{ module => Module
+             , function => Function
+             , arity => Arity
+             , file => proplists:get_value(file, Props)
+             , line => proplists:get_value(line, Props)
+             },
+    [Frame | stacktrace_to_map(Rest)].
 
 
 %%%_* Emacs ============================================================
