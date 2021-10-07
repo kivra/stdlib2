@@ -78,7 +78,7 @@
   -define(failed(Rsn, Extras),                   ?LOG_ERROR(fun s2_util:report_failed/1, [Rsn, Extras])).
   -define(failed(Rsn),                           ?failed(Rsn, #{})).
 
-  -define(exception(C, R, S, E),                 ?LOG_ERROR(fun s2_util:report_exception/1, [C, R, S, E])).
+  -define(exception(C, R, S, Extras),            ?LOG_ERROR(fun s2_util:report_exception/1, [C, R, S, Extras])).
   -define(exception(Class, Reason, Stacktrace),  ?exception(Class, Reason, Stacktrace, #{})).
 
 -else.
