@@ -77,25 +77,11 @@ report_failed([Reason, Extras]) ->
      , extras => ensure_map(Extras)
      }.
 
--spec report_exception( list() ) -> map().
+-spec report_exception( list() ) -> { logger:report(), logger:metadata() }.
 report_exception([Class, Reason, Stacktrace, Extras]) ->
-    #{ reason => Reason
-     , exception_class => Class
-     , stacktrace => stacktrace_to_map(Stacktrace)
-     , extras => ensure_map(Extras)
-     }.
-
-stacktrace_to_map([]) ->
-    [];
-stacktrace_to_map([{Module, Function, Arity, Props}|Rest]) ->
-    Frame = #{ module => Module
-             , function => Function
-             , arity => Arity
-             , file => proplists:get_value(file, Props)
-             , line => proplists:get_value(line, Props)
-             },
-    [Frame | stacktrace_to_map(Rest)].
-
+    Report = maps:merge(ensure_map(Extras), #{ reason => {Class, Reason} }),
+    Meta = #{ stacktrace => Stacktrace },
+    { Report, Meta }.
 
 %%%_* Emacs ============================================================
 %%% Local Variables:
