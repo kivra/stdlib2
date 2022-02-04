@@ -140,35 +140,36 @@
 
   -else.
     -ifdef(S2_DEBUG).
-      -define(debug(Msg),            ?debug(Msg, [])).
-      -define(debug(Fmt, As),        ?do_debug(unicode:characters_to_list(["~p:~s:~p: Debug: ", Fmt, "~n"]),
-                                              [self(), ?FILE, ?LINE|As])).
+      -define(debug(StringOrReport),                 ?do_debug(StringOrReport)).
+      -define(debug(StringOrReport, ArgsOrMeta),     ?do_debug(StringOrReport, ArgsOrMeta)).
+      -define(debug(FunOrFormat, Args, Meta),        ?do_debug(FunOrFormat, Args, Meta)).
     -else.
-      -define(debug(Msg),            ok).
-      -define(debug(Fmt, As),        ok).
+      -define(debug(StringOrReport),                 ok).
+      -define(debug(StringOrReport, ArgsOrMeta),     ok).
+      -define(debug(FunOrFormat, Args, Meta),        ok).
     -endif. %S2_DEBUG
 
-    -define(info(Msg),             ?info(Msg, [])).
-    -define(info(Fmt, As),         ?do_info(unicode:characters_to_list(["~p:~s:~p: Info: ", Fmt, "~n"]),
-                                            [self(), ?FILE, ?LINE|As])).
-    -define(notice(Msg),           ?notice(Msg, [])).
-    -define(notice(Fmt, As),       ?do_notice(unicode:characters_to_list(["~p:~s:~p: Notice: ", Fmt, "~n"]),
-                                              [self(), ?FILE, ?LINE|As])).
-    -define(warning(Msg),          ?warning(Msg, [])).
-    -define(warning(Fmt, As),      ?do_warning(unicode:characters_to_list(["~p:~s:~p: Warning: ", Fmt, "~n"]),
-                                              [self(), ?FILE, ?LINE|As])).
-    -define(error(Msg),            ?error(Msg, [])).
-    -define(error(Fmt, As),        ?do_error(unicode:characters_to_list(["~p:~s:~p: Error: ", Fmt, "~n"]),
-                                            [self(), ?FILE, ?LINE|As])).
-    -define(critical(Msg),         ?critical(Msg, [])).
-    -define(critical(Fmt, As),     ?do_critical(unicode:characters_to_list(["~p:~s:~p: Critical: ", Fmt, "~n"]),
-                                                [self(), ?FILE, ?LINE|As])).
-    -define(alert(Msg),            ?alert(Msg, [])).
-    -define(alert(Fmt, As),        ?do_alert(unicode:characters_to_list(["~p:~s:~p: Alert: ", Fmt, "~n"]),
-                                            [self(), ?FILE, ?LINE|As])).
-    -define(emergency(Msg),        ?emergency(Msg, [])).
-    -define(emergency(Fmt, As),    ?do_emergency(unicode:characters_to_list(["~p:~s:~p: Emergency: ", Fmt, "~n"]),
-                                                [self(), ?FILE, ?LINE|As])).
+    -define(info(StringOrReport),                  ?do_info(StringOrReport)).
+    -define(info(StringOrReport, ArgsOrMeta),      ?do_info(StringOrReport, ArgsOrMeta)).
+    -define(info(FunOrFormat, Args, Meta),         ?do_info(FunOrFormat, Args, Meta)).
+    -define(notice(StringOrReport),                ?do_notice(StringOrReport)).
+    -define(notice(StringOrReport, ArgsOrMeta),    ?do_notice(StringOrReport, ArgsOrMeta)).
+    -define(notice(FunOrFormat, Args, Meta),       ?do_notice(FunOrFormat, Args, Meta)).
+    -define(warning(StringOrReport),               ?do_warning(StringOrReport)).
+    -define(warning(StringOrReport, ArgsOrMeta),   ?do_warning(StringOrReport, ArgsOrMeta)).
+    -define(warning(FunOrFormat, Args, Meta),      ?do_warning(FunOrFormat, Args, Meta)).
+    -define(error(StringOrReport),                 ?do_error(StringOrReport)).
+    -define(error(StringOrReport, ArgsOrMeta),     ?do_error(StringOrReport, ArgsOrMeta)).
+    -define(error(FunOrFormat, Args, Meta),        ?do_error(FunOrFormat, Args, Meta)).
+    -define(critical(StringOrReport),              ?do_critical(StringOrReport)).
+    -define(critical(StringOrReport, ArgsOrMeta),  ?do_critical(StringOrReport, ArgsOrMeta)).
+    -define(critical(FunOrFormat, Args, Meta),     ?do_critical(FunOrFormat, Args, Meta)).
+    -define(alert(StringOrReport),                 ?do_alert(StringOrReport)).
+    -define(alert(StringOrReport, ArgsOrMeta),     ?do_alert(StringOrReport, ArgsOrMeta)).
+    -define(alert(FunOrFormat, Args, Meta),        ?do_alert(FunOrFormat, Args, Meta)).
+    -define(emergency(StringOrReport),             ?do_emergency(StringOrReport)).
+    -define(emergency(StringOrReport, ArgsOrMeta), ?do_emergency(StringOrReport, ArgsOrMeta)).
+    -define(emergency(FunOrFormat, Args, Meta),    ?do_emergency(FunOrFormat, Args, Meta)).
 
     -ifdef(S2_NOLOG).
 
@@ -183,14 +184,30 @@
 
     -else. %default
 
-      -define(do_debug(Fmt, As),     error_logger:info_msg(Fmt, As)).
-      -define(do_info(Fmt, As),      error_logger:info_msg(Fmt, As)).
-      -define(do_notice(Fmt, As),    error_logger:info_msg(Fmt, As)).
-      -define(do_warning(Fmt, As),   error_logger:warning_msg(Fmt, As)).
-      -define(do_error(Fmt, As),     error_logger:warning_msg(Fmt, As)).
-      -define(do_critical(Fmt, As),  error_logger:error_msg(Fmt, As)).
-      -define(do_alert(Fmt, As),     error_logger:error_msg(Fmt, As)).
-      -define(do_emergency(Fmt, As), error_logger:error_msg(Fmt, As)).
+      -define(do_debug(StringOrReport),                 ?LOG_DEBUG(StringOrReport)).
+      -define(do_debug(StringOrReport, ArgsOrMeta),     ?LOG_DEBUG(StringOrReport, ArgsOrMeta)).
+      -define(do_debug(FunOrFormat, Args, Meta),        ?LOG_DEBUG(FunOrFormat, Args, Meta)).
+      -define(do_info(StringOrReport),                  ?LOG_INFO(StringOrReport)).
+      -define(do_info(StringOrReport, ArgsOrMeta),      ?LOG_INFO(StringOrReport, ArgsOrMeta)).
+      -define(do_info(FunOrFormat, Args, Meta),         ?LOG_INFO(FunOrFormat, Args, Meta)).
+      -define(do_notice(StringOrReport),                ?LOG_NOTICE(StringOrReport)).
+      -define(do_notice(StringOrReport, ArgsOrMeta),    ?LOG_NOTICE(StringOrReport, ArgsOrMeta)).
+      -define(do_notice(FunOrFormat, Args, Meta),       ?LOG_NOTICE(FunOrFormat, Args, Meta)).
+      -define(do_warning(StringOrReport),               ?LOG_WARNING(StringOrReport)).
+      -define(do_warning(StringOrReport, ArgsOrMeta),   ?LOG_WARNING(StringOrReport, ArgsOrMeta)).
+      -define(do_warning(FunOrFormat, Args, Meta),      ?LOG_WARNING(FunOrFormat, Args, Meta)).
+      -define(do_error(StringOrReport),                 ?LOG_ERROR(StringOrReport)).
+      -define(do_error(StringOrReport, ArgsOrMeta),     ?LOG_ERROR(StringOrReport, ArgsOrMeta)).
+      -define(do_error(FunOrFormat, Args, Meta),        ?LOG_ERROR(FunOrFormat, Args, Meta)).
+      -define(do_critical(StringOrReport),              ?LOG_CRITICAL(StringOrReport)).
+      -define(do_critical(StringOrReport, ArgsOrMeta),  ?LOG_CRITICAL(StringOrReport, ArgsOrMeta)).
+      -define(do_critical(FunOrFormat, Args, Meta),     ?LOG_CRITICAL(FunOrFormat, Args, Meta)).
+      -define(do_alert(StringOrReport),                 ?LOG_ALERT(StringOrReport)).
+      -define(do_alert(StringOrReport, ArgsOrMeta),     ?LOG_ALERT(StringOrReport, ArgsOrMeta)).
+      -define(do_alert(FunOrFormat, Args, Meta),        ?LOG_ALERT(FunOrFormat, Args, Meta)).
+      -define(do_emergency(StringOrReport),             ?LOG_EMERGENCY(StringOrReport)).
+      -define(do_emergency(StringOrReport, ArgsOrMeta), ?LOG_EMERGENCY(StringOrReport, ArgsOrMeta)).
+      -define(do_emergency(FunOrFormat, Args, Meta),    ?LOG_EMERGENCY(FunOrFormat, Args, Meta)).
 
     -endif. %S2_NOLOG
   -endif. %S2_USE_LAGER
