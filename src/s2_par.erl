@@ -9,6 +9,8 @@
 %%%_* Exports ==========================================================
 -export([ map/2
         , map/3
+        , filtermap/2
+        , filtermap/3
         ]).
 
 -export_type([ opt/0
@@ -34,6 +36,15 @@ map(F, Xs) ->
 map(_F, [], _Opts) ->
   {ok, []};
 map(F, Xs, Opts) ->
+  filtermap(fun(A) -> {true, F(A)} end, Xs, Opts).
+
+-spec filtermap(fun((A) -> boolean() | {true, B}), [A]) -> maybe([maybe(B, _) | B], _).
+filtermap(F, Xs) ->
+  filtermap(F, Xs, []).
+
+filtermap(_F, [], _Opts) ->
+  {ok, []};
+filtermap(F, Xs, Opts) ->
   Timeout   = s2_lists:assoc(Opts, timeout,   infinity),
   Errors    = s2_lists:assoc(Opts, errors,    false),
   Workers   = s2_lists:assoc(Opts, workers,   0),
@@ -106,7 +117,15 @@ spawn_workers(F, Xs, Workers, ChunkSize) ->
   [proc_lib:spawn_link(?thunk(worker(F, C, Self))) || C <- Chunks].
 
 worker(F, Chunk, Parent) ->
-  s2_procs:send(Parent, [?lift(F(X)) || X <- Chunk]).
+  s2_procs:send(Parent, worker_filtermap(F, Chunk)).
+
+worker_filtermap(F, [X | Chunk]) ->
+  case F(X) of
+    true -> [?lift(X) | worker_filtermap(F, Chunk)];
+    {true, Value} -> [?lift(Value) | worker_filtermap(F, Chunk)];
+    false -> worker_filtermap(F, Chunk)
+  end;
+worker_filtermap(_F, []) -> [].
 
 %%%_ * Chunking --------------------------------------------------------
 chunk(Xs, Workers, ChunkSize)
@@ -136,13 +155,26 @@ divide(N, M) when N rem M =/= 0 -> N div M + 1.
 %%%_* Tests ============================================================
 -ifdef(TEST).
 
-basic_test() ->
+map_basic_test() ->
   {ok, []} = map(fun(X) -> X + 1 end, []),
   {ok, Ys} = map(fun(X) -> X + 1 end, [0, 1, 2]),
   true     = length(Ys) =:= 3,
   true     = lists:member(1, Ys),
   true     = lists:member(2, Ys),
   true     = lists:member(3, Ys).
+
+filtermap_basic_test() ->
+  Fun = fun
+          (X) when X rem 2 =:= 1 -> {true, X + 1};
+          (_X) -> false
+        end,
+
+  {ok, []} = filtermap(Fun, []),
+  {ok, Ys} = filtermap(Fun, [0, 1, 2]),
+  true     = length(Ys) =:= 1,
+  false    = lists:member(1, Ys),
+  true     = lists:member(2, Ys),
+  false    = lists:member(3, Ys).
 
 timeout_test() ->
   {ok, []}         = map(fun(X) -> X + 1 end, [],        [{timeout, 0}]),
