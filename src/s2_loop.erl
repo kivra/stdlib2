@@ -56,7 +56,7 @@ for_test() ->
 -endif.
 
 
--spec retry(fun()) -> maybe(_, _).
+-spec retry(fun()) -> 'maybe'(_, _).
 %% @doc Call F every T milliseconds until it returns ok.
 %% Abort after N retries unless N is infinity.
 %% Note that F is called at least once.

@@ -193,7 +193,7 @@ temp_name_test()       -> "/tmp/prefix" ++ N = temp_name("/tmp", "prefix"),
 eval(Fmt, Args) ->
   eval(lists:flatten(io_lib:format(Fmt, Args))).
 
--spec eval(string()) -> maybe(string(), {non_neg_integer(), string()}).
+-spec eval(string()) -> 'maybe'(string(), {non_neg_integer(), string()}).
 eval(Cmd) ->
   s2_fs:with_temp_file(fun(F) ->
     S0         = os:cmd(io_lib:format("~s > ~s 2>&1; echo $?", [Cmd, F])),
