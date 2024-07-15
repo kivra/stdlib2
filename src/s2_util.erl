@@ -23,11 +23,14 @@
 
 %%%_* Exports ==========================================================
 -export([ consult_string/1
-        , init_folsom/1
         , ensure_map/1
         , report_failed/1
         , report_exception/1
         ]).
+
+-ifdef(S2_USE_FOLSOM).
+-export([init_folsom/1]).
+-endif.
 
 -ignore_xref([init_folsom/1]).
 
@@ -53,6 +56,7 @@ consult_string_test() ->
   {error, _} = consult_string([12345]).
 -endif.
 
+-ifdef(S2_USE_FOLSOM).
 init_folsom(Metrics) ->
   ?lift([begin
            F = s2_atoms:catenate(['new_', Type]),
@@ -63,6 +67,7 @@ init_folsom(Metrics) ->
            folsom_metrics:tag_metric(A, {func, Func}),
            [folsom_metrics:tag_metric(A, {ret, Ret}) || Ret <- Rest]
          end || {Type, [App, Mod, Func|Rest] = Name} <- Metrics]).
+-endif.
 
 -spec ensure_map(map() | list({atom(),any()})) -> map().
 %% @doc Ensure parameters to OTP logger is a map
