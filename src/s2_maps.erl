@@ -67,7 +67,7 @@ dict_update(K, F, Thunk, Dict) ->
     error   -> dict:store(K, Thunk(), Dict)
   end.
 
--spec get(s2map(), [_]) -> maybe(_, notfound).
+-spec get(s2map(), [_]) -> 'maybe'(_, notfound).
 %% @doc Look up the value associated with the leaf reachable via Ks in
 %% Map.
 get(Map, [K]) ->

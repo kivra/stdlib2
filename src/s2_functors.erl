@@ -17,6 +17,7 @@
 -export([fmap/2]).
 -export_type([functor/1]).
 
+
 %%%_* Types ===================================================================
 %% The following type constructors are instances of the `functor` type class.
 %% Note that types must be without overlap for any arbitrary value of `A`.
@@ -31,7 +32,7 @@
 -type functor(A) :: [A]
                     | #{_ := A}
                     | fun((_) -> A)
-                    | s2_maybe:maybe(A, _).
+                    | s2_maybe:'maybe'(A, _).
 
 %%%_* Code ====================================================================
 -spec fmap(fun((A) -> B), functor(A)) -> functor(B).

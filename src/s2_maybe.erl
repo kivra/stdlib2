@@ -21,6 +21,8 @@
         , unlift/2
         ]).
 
+-export_type(['maybe'/2]).
+
 %%%_* Includes =========================================================
 -include("prelude.hrl").
 -ifdef(TEST).
@@ -28,7 +30,7 @@
 -endif.
 
 %%%_* Code =============================================================
--spec do([fun()])                            -> maybe(_, _).
+-spec do([fun()])                            -> 'maybe'(_, _).
 %% @doc doc(Fs) is the result of chaining Fs inside the maybe monad.
 do([F|Fs])                                   -> do(Fs, lift(F)).
 do([],     X)                                -> X;
@@ -54,7 +56,7 @@ do_test() ->
        ]).
 -endif.
 
--spec fmap(fun((A) -> B), maybe(A, C)) -> maybe(B, C).
+-spec fmap(fun((A) -> B), 'maybe'(A, C)) -> 'maybe'(B, C).
 %%@doc fmap(F, Maybe) is the result of mapping F over Maybe.
 fmap(F, {ok, Value})     when is_function(F, 1) -> {ok, F(Value)};
 fmap(F, {error, Reason}) when is_function(F, 1) -> {error, Reason}.
@@ -68,7 +70,7 @@ fmap_test() ->
   {error, reason}       = fmap(fun(_X) -> {error, reason2} end, {error, reason}).
 -endif.
 
--spec lift(fun()) -> maybe(_, _).
+-spec lift(fun()) -> 'maybe'(_, _).
 %% @doc lift(F) is the value of F() lifted into the maybe monad.
 lift(F) ->
   try F() of
@@ -110,7 +112,7 @@ lift_unlift_test() ->
   42             = unlift(fun(X) -> {ok, X} end, 42).
 -endif.
 
--spec liftm(fun(), [maybe(_, B)] | [thunk(maybe(_, B))]) -> maybe(_, B).
+-spec liftm(fun(), ['maybe'(_, B)] | [thunk('maybe'(_, B))]) -> 'maybe'(_, B).
 %% @doc lift a function F into the Maybe monad.
 liftm(F, Maybes) when is_list(Maybes) and is_function(F, length(Maybes)) ->
   ?fmap(fun(Args) -> apply(F, Args) end, sequence(Maybes)).
@@ -125,7 +127,7 @@ liftm_test() ->
   ?assertEqual({ok, 6},         ?liftm(Add3, {ok, 1}, {ok, 2}, {ok, 3})).
 -endif.
 
--spec map(fun(), [_]) -> maybe(_, _).
+-spec map(fun(), [_]) -> 'maybe'(_, _).
 %%@doc map(F, Xs) is the result of mapping F over Xs inside the maybe
 %% monad.
 map(F, Xs) -> ?lift([?unlift(F(X)) || X <- Xs]).
@@ -138,7 +140,7 @@ map_test() ->
 -endif.
 
 
--spec reduce(fun(), [_]) -> maybe(_, _).
+-spec reduce(fun(), [_]) -> 'maybe'(_, _).
 %% @doc reduce(F, Xs) is the result of reducing Xs to F inside the maybe
 %% monad.
 reduce(F, [Acc0|Xs]) ->
@@ -153,7 +155,7 @@ reduce_test() ->
   {error, _} = reduce(fun(X, Y) -> X + Y       end, [0, foo]).
 -endif.
 
--spec sequence(collection(maybe(A, B)) | collection(thunk(maybe(A, B)))) -> maybe(collection(A), B).
+-spec sequence(collection('maybe'(A, B)) | collection(thunk('maybe'(A, B)))) -> 'maybe'(collection(A), B).
 %% @doc sequence(Maybes) evaluates each maybe in a collectiom of maybes and
 %% collects the results inside the maybe monad. Supports lazy evaluation of
 %% thunks.
@@ -181,7 +183,7 @@ sequence_test() ->
   ?assertEqual({error, foo},            sequence(#{a => {ok, 1}, b => ?thunk({error, foo})})).
 -endif.
 
--spec to_bool(maybe(_, _)) -> boolean().
+-spec to_bool('maybe'(_, _)) -> boolean().
 %% @doc to_bool(X) is the boolean representation of the maybe-value X.
 to_bool({ok, _})           -> true;
 to_bool({error, _})        -> false.

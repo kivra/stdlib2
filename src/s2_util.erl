@@ -38,7 +38,7 @@
 -endif.
 
 %%%_* Code =============================================================
--spec consult_string(string()) -> maybe(term(), _).
+-spec consult_string(string()) -> 'maybe'(term(), _).
 %% @doc Parse String as an Erlang term.
 consult_string(String) ->
   case erl_scan:string(String ++ ".") of
