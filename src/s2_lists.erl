@@ -32,7 +32,7 @@
 -endif.
 
 %%%_* Code =============================================================
--spec assoc(alist(A, B), A) -> maybe(B, notfound).
+-spec assoc(alist(A, B), A) -> 'maybe'(B, notfound).
 %% @doc assoc(KVs, K) is the value associated with K in KVs.
 assoc(L, K) ->
   case lists:keyfind(K, 1, L) of

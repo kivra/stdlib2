@@ -29,7 +29,7 @@
              | {workers,   non_neg_integer()}
              | {chunksize, non_neg_integer()}.
 
--spec map(fun((A) -> B), [A]) -> maybe([maybe(B, _) | B], _).
+-spec map(fun((A) -> B), [A]) -> 'maybe'(['maybe'(B, _) | B], _).
 %% @doc map(F, Xs) is the result of mapping F over Xs in parallel.
 map(F, Xs) ->
   map(F, Xs, []).
@@ -38,7 +38,7 @@ map(_F, [], _Opts) ->
 map(F, Xs, Opts) ->
   filtermap(fun(A) -> {true, F(A)} end, Xs, Opts).
 
--spec filtermap(fun((A) -> boolean() | {true, B}), [A]) -> maybe([maybe(B, _) | B], _).
+-spec filtermap(fun((A) -> boolean() | {true, B}), [A]) -> 'maybe'(['maybe'(B, _) | B], _).
 filtermap(F, Xs) ->
   filtermap(F, Xs, []).
 

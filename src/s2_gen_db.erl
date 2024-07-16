@@ -36,10 +36,10 @@
 -type key()                      :: _.
 -type obj()                      :: _.
 
--callback do_init([_])           -> maybe(db(), _).
--callback do_insert(db(), obj()) -> maybe(db(), _).
--callback do_lookup(db(), key()) -> maybe(obj(), _).
--callback do_delete(db(), key()) -> maybe(db(), _).
+-callback do_init([_])           -> 'maybe'(db(), _).
+-callback do_insert(db(), obj()) -> 'maybe'(db(), _).
+-callback do_lookup(db(), key()) -> 'maybe'(obj(), _).
+-callback do_delete(db(), key()) -> 'maybe'(db(), _).
 
 %%%_ * gen_db API ------------------------------------------------------
 new(Name, Opts)  -> ?unlift(gen_server:start({local, regname(Name)},

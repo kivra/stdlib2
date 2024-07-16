@@ -154,7 +154,7 @@ send(Proc, Msg0) ->
     {'EXIT', {badarg, _}} -> {error, no_such_process}
   end.
 
--spec recv(proc()) -> maybe(_, _).
+-spec recv(proc()) -> 'maybe'(_, _).
 %% @doc recv(Proc) is the next message received from Proc.
 recv(Proc) ->
   recv(Proc, infinity).
