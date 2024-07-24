@@ -43,7 +43,7 @@ luhn(String) when is_list(String) ->
   {_, Sum} = lists:foldr(fun luhn_fold/2, {odd, 0}, IntList),
   (Sum*9) rem 10.
 
--spec luhn_validate(string()) -> boolean().
+-spec luhn_validate(binary() | string()) -> boolean().
 luhn_validate(String) when is_binary(String) ->
   luhn_validate(binary_to_list(String));
 luhn_validate(String) when is_list(String) ->
