@@ -54,12 +54,6 @@ cp(Src, Dest0)           -> Dest    = unix2erl(Src, Dest0),
                             {ok, _} = file:copy(Src, Dest),
                             Dest.
 
--ifdef(TEST).
-cp_test()                -> rm_rf(s2_fs:with_temp_file(
-                              fun(F) -> cp(F, F ++ ".2") end)).
--endif.
-
-
 -spec ls(file())         -> [file()].
 ls(Dir)                  -> {ok, Files} = file:list_dir(Dir), Files.
 

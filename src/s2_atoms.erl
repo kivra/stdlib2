@@ -7,10 +7,7 @@
 -module(s2_atoms).
 
 %%%_* Exports ==========================================================
--export([ catenate/1
-        , gensym/0
-        , gensym/1
-        ]).
+-export([catenate/1]).
 
 %%%_* Includes =========================================================
 -include("prelude.hrl").
@@ -28,25 +25,6 @@ catenate(Args) ->
 -ifdef(TEST).
 catenate_test() ->
   'foo426.66000000000000000000e+02bar' = catenate([foo, 42, 666.0, "bar"]).
--endif.
-
-
--spec gensym() -> atom().
-%% @doc gensym() is a fresh atom.
-gensym() ->
-  gensym('$gensym').
-gensym(Prefix0) ->
-  Prefix                = s2_lists:to_list(Prefix0),
-  Ref                   = erlang:ref_to_list(make_ref()),
-  {ok, Suffix0, []}     = io_lib:fread("#Ref<~d.~d.~d.~d>", Ref),
-  Suffix                = lists:concat(Suffix0),
-  Sym                   = Prefix ++ Suffix,
-  {'EXIT', {badarg, _}} = (catch list_to_existing_atom(Sym)), %assert unique
-  ?l2a(Sym).
-
--ifdef(TEST).
-gensym0_test() -> ?assert(gensym()    =/= gensym()).
-gensym1_test() -> ?assert(gensym(foo) =/= gensym(foo)).
 -endif.
 
 %%%_* Emacs ============================================================

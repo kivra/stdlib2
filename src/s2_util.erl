@@ -28,12 +28,6 @@
         , report_exception/1
         ]).
 
--ifdef(S2_USE_FOLSOM).
--export([init_folsom/1]).
--endif.
-
--ignore_xref([init_folsom/1]).
-
 %%%_* Includes =========================================================
 -include("prelude.hrl").
 -ifdef(TEST).
@@ -54,19 +48,6 @@ consult_string_test() ->
   {ok, 42}   = consult_string("42"),
   {error, _} = consult_string("{42"),
   {error, _} = consult_string([12345]).
--endif.
-
--ifdef(S2_USE_FOLSOM).
-init_folsom(Metrics) ->
-  ?lift([begin
-           F = s2_atoms:catenate(['new_', Type]),
-           A = ?name(Name),
-           folsom_metrics:F(A),
-           folsom_metrics:tag_metric(A, {app, App}),
-           folsom_metrics:tag_metric(A, {mod, Mod}),
-           folsom_metrics:tag_metric(A, {func, Func}),
-           [folsom_metrics:tag_metric(A, {ret, Ret}) || Ret <- Rest]
-         end || {Type, [App, Mod, Func|Rest] = Name} <- Metrics]).
 -endif.
 
 -spec ensure_map(map() | list({atom(),any()})) -> map().
