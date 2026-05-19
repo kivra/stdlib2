@@ -147,12 +147,12 @@ pid_test() ->
 -spec send(proc(), _) -> whynot(no_such_process).
 %% @doc send(Proc, Msg) causes Msg to be sent to Proc.
 send(Proc, Msg0) ->
-  {Tag, _, _} = tab(Proc),
-  Msg         = {Tag, Msg0},
-  case catch Proc ! Msg of
-    Msg                   -> ok;
-    {'EXIT', {badarg, _}} -> {error, no_such_process}
-  end.
+    {Tag, _, _} = tab(Proc),
+    Msg = {Tag, Msg0},
+    try (Proc ! Msg) of
+        Msg -> ok
+    catch _:_ -> {error, no_such_process}
+    end.
 
 -spec recv(proc()) -> 'maybe'(_, _).
 %% @doc recv(Proc) is the next message received from Proc.
@@ -232,9 +232,3 @@ with_monitor_test() ->
     with_monitor(spawn(?thunk(ok)),
                  fun({Proc, Monitor}) -> recv(Proc, Monitor, infinity) end).
 -endif.
-
-%%%_* Emacs ============================================================
-%%% Local Variables:
-%%% allout-layout: t
-%%% erlang-indent-level: 2
-%%% End:

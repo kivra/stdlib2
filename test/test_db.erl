@@ -1,5 +1,4 @@
 -module(test_db).
--behaviour(s2_gen_db).
 
 -export([ do_init/1
         , do_insert/2

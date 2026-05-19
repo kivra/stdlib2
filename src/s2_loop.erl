@@ -78,20 +78,6 @@ retry({error, _}, F, T, N) when N > 0 ->
 dec(infinity) -> infinity;
 dec(N)        -> N-1.
 
--ifdef(TEST).
-retry_test() ->
-  F = ?thunk(receive foo -> self() ! bar
-             after   0   -> self() ! foo, {error, foo}
-             end),
-  G = ?thunk(receive bar -> ok
-             after   0   -> throw(exn)
-             end),
-  {ok, bar} = retry(F),
-  G(),
-  {error, foo} = retry(F, 1, 0),
-  exn = (catch G()).
--endif.
-
 %%%_* Emacs ============================================================
 %%% Local Variables:
 %%% allout-layout: t

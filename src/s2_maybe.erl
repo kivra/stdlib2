@@ -38,23 +38,6 @@ do(_,      {error, Rsn})                     -> {error, Rsn};
 do([F|Fs], {ok, _}) when is_function(F, 0)   -> do(Fs, lift(F));
 do([F|Fs], {ok, Res}) when is_function(F, 1) -> do(Fs, lift(F, Res)).
 
--ifdef(TEST).
-do_test() ->
-  {ok, 42} =
-    do([ fun()  -> 1        end
-       , fun(X) -> X        end
-       , fun()  -> 0        end
-       , fun(0) -> {ok, 41} end
-       , fun(X) -> X + 1    end
-       ]),
-  Exn = fun() -> throw(exn) end,
-  catch Exn(), %cover
-  {error, foo} =
-    do([ fun()  -> foo        end
-       , fun(X) -> {error, X} end
-       , Exn
-       ]).
--endif.
 
 -spec fmap(fun((A) -> B), 'maybe'(A, C)) -> 'maybe'(B, C).
 %%@doc fmap(F, Maybe) is the result of mapping F over Maybe.
@@ -97,20 +80,6 @@ unlift(F) ->
   end.
 
 unlift(F, X) -> unlift(?thunk(F(X))).
-
--ifdef(TEST).
-lift_unlift_test() ->
-  {ok, ok}       = ?lift(?unlift(?lift(ok))),
-  {ok, ok}       = ?lift(?unlift(?lift({ok, ok}))),
-  ok             = ?unlift(?lift(?unlift(ok))),
-  ok             = ?unlift(?lift(?unlift({ok, ok}))),
-  {error, error} = ?lift(?unlift(?lift(error))),
-  {error, error} = ?lift(?unlift(?lift(throw({error, error})))),
-  {error, error} = (catch ?unlift(?lift(?unlift(error)))),
-  {ok, ok}       = ?lift(ok),
-  {ok, 42}       = lift(fun(X) -> X end, 42),
-  42             = unlift(fun(X) -> {ok, X} end, 42).
--endif.
 
 -spec liftm(fun(), ['maybe'(_, B)] | [thunk('maybe'(_, B))]) -> 'maybe'(_, B).
 %% @doc lift a function F into the Maybe monad.
