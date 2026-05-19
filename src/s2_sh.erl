@@ -34,10 +34,7 @@
         ]).
 
 %% Misc
--export([ eval/1
-        , eval/2
-        , host/1
-        ]).
+-export([host/1]).
 
 %%%_* Includes =========================================================
 -include("prelude.hrl").
@@ -92,12 +89,6 @@ mv(Old, New0)            -> New = unix2erl(Old, New0),
                             ok = file:rename(Old, New),
                             New.
 
--ifdef(TEST).
-mv_test()                -> rm_rf(s2_fs:with_temp_file(
-                              fun(F) -> mv(F, F ++ ".2") end)).
--endif.
-
-
 -spec rm_rf(file())      -> file().
 rm_rf(Path)              -> rm_rf(filelib:is_dir(Path), Path), Path.
 rm_rf(true, Path)        -> [rm_rf(filename:join(Path, F)) || F <- ls(Path)],
@@ -123,18 +114,6 @@ rmdir_test()             -> rmdir(mktemp_d()).
 -spec touch(file())      -> file().
 touch(File)              -> ok = file:change_time(File, s2_time:datetime()),
                             File.
-
--ifdef(TEST).
-touch_test() ->
-  true = s2_fs:with_temp_file(fun(F) ->
-    F = touch(F),
-    {ok, #file_info{mtime=Mtime1}} = file:read_file_info(F),
-    timer:sleep(1000),
-    F = touch(F),
-    {ok, #file_info{mtime=Mtime2}} = file:read_file_info(F),
-    Mtime1 < Mtime2
-  end).
--endif.
 
 %%
 %% Internal
@@ -184,29 +163,6 @@ temp_name_test()       -> "/tmp/prefix" ++ N = temp_name("/tmp", "prefix"),
 -endif.
 
 %%%_ * Misc ------------------------------------------------------------
-eval(Fmt, Args) ->
-  eval(lists:flatten(io_lib:format(Fmt, Args))).
-
--spec eval(string()) -> 'maybe'(string(), {non_neg_integer(), string()}).
-eval(Cmd) ->
-  s2_fs:with_temp_file(fun(F) ->
-    S0         = os:cmd(io_lib:format("~s > ~s 2>&1; echo $?", [Cmd, F])),
-    {S, "\n"}  = string:to_integer(S0),
-    {ok, Out0} = file:read_file(F),
-    Out        = ?b2l(Out0),
-    case S of
-      0 -> {ok, Out};
-      N -> {error, {N, Out}}
-    end
-  end).
-
--ifdef(TEST).
-eval_test() ->
-  {ok, _}         = eval("ls /tmp"),
-  {error, {_, _}} = eval("ls nosuchfile").
--endif.
-
-
 -spec host(string() | inet:ip_address()) -> inet:ip_address() | string().
 host(Host) when ?is_string(Host) ->
   ?unlift(inet:getaddr(Host, inet));
