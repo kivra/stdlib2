@@ -8,13 +8,13 @@ jobs:
     name: OTP ${{matrix.otp}}
     strategy:
       matrix:
-        otp: ["26.0", "27.0"]
+        otp: ["27.0", "28.0", "29.0"]
     steps:
-    - uses: actions/checkout@v2.0.0
-    - uses: erlef/setup-beam@v1.18.0
+    - uses: actions/checkout@v4.2.2
+    - uses: erlef/setup-beam@v1.20.4
       with:
         otp-version: ${{ matrix.otp }}
-        rebar3-version: "3.23.0"
+        rebar3-version: "3.27.0"
     - name: Compile
       run: make compile
     - name: Run xref
@@ -31,7 +31,7 @@ jobs:
     steps:
     - name: Bump version and push tag
       id: tag_version
-      uses: mathieudutour/github-tag-action@v5.3
+      uses: mathieudutour/github-tag-action@v6.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Create a GitHub release
