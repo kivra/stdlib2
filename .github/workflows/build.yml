@@ -30,6 +30,8 @@ jobs:
     if: github.ref == 'refs/heads/master' && startsWith(github.event.head_commit.message, 'no-release:') == false
     needs: build_and_test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Bump version and push tag
       id: tag_version
@@ -37,10 +39,10 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Create a GitHub release
-      uses: actions/create-release@v1.1.4
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag_version.outputs.new_tag }}
-        release_name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.repository }}
+        TAG: ${{ steps.tag_version.outputs.new_tag }}
+        CHANGELOG: ${{ steps.tag_version.outputs.changelog }}
+      run: gh release create "$TAG" --title "Release $TAG" --notes "$CHANGELOG"
+
