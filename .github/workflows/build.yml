@@ -8,13 +8,15 @@ jobs:
     name: OTP ${{matrix.otp}}
     strategy:
       matrix:
-        otp: ["27.0", "28.0", "29.0"]
+        otp:
+          - "28.0"
+          - "29.0"
     steps:
-    - uses: actions/checkout@v4.2.2
-    - uses: erlef/setup-beam@v1.20.4
+    - uses: actions/checkout@v7.0.1
+    - uses: erlef/setup-beam@v1.24.1
       with:
         otp-version: ${{ matrix.otp }}
-        rebar3-version: "3.27.0"
+        rebar3-version: 3.27.0
     - name: Compile
       run: make compile
     - name: Run xref
@@ -28,6 +30,8 @@ jobs:
     if: github.ref == 'refs/heads/master' && startsWith(github.event.head_commit.message, 'no-release:') == false
     needs: build_and_test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Bump version and push tag
       id: tag_version
@@ -35,10 +39,10 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Create a GitHub release
-      uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag_version.outputs.new_tag }}
-        release_name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.repository }}
+        TAG: ${{ steps.tag_version.outputs.new_tag }}
+        CHANGELOG: ${{ steps.tag_version.outputs.changelog }}
+      run: gh release create "$TAG" --title "Release $TAG" --notes "$CHANGELOG"
+

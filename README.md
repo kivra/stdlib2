@@ -30,7 +30,6 @@ Manifest
     * s2_funs.erl        -- Combinators.
     * s2_lists.erl       -- `lists' extensions.
     * s2_loop.erl        -- Higher-order functions for writing loops.
-    * s2_maps.erl        -- Nested dictionaries.
     * s2_maybe.erl       -- The Maybe Monad.
     * s2_par.erl         -- Better pmap.
     * s2_procs.erl       -- `erlang' extensions.
